@@ -6,7 +6,6 @@ from .models import Unit
 from .serializers.serializers import UnitSerializer, UUnitSerializer, ULessonSerializer
 from .permissions import IsProfessor
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import generics
 from .models import Lessons
 from .serializers.serializers import LessonsSerializer
 from rest_framework import filters
@@ -39,6 +38,7 @@ class UnitViewSet(viewsets.ModelViewSet):
     queryset = Unit.objects.all()
     serializer_class = UnitSerializer
     permission_classes = [IsAuthenticated, IsProfessor]
+    ordering_fields = ['level', 'name']  # Opcional: permite ordenar por id o nombre
 
 
 class LessonsListView(viewsets.ModelViewSet):

@@ -23,6 +23,7 @@ class User(AbstractUser):
     birthday = models.DateField(null=True, blank=True)
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=20)
+    level = models.IntegerField(default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
 

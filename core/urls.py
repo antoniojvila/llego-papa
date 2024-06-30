@@ -29,6 +29,7 @@ from apps.signals.views import SignalsListView
 from rest_framework.routers import DefaultRouter
 from apps.signals.views import UnitViewSet, LessonsListView, ULessonViewSet, UUnitViewSet
 from apps.user.views import RegisterView
+from apps.signals.view_d import DiagnosticLessonsView, SubmitResponseView
 
 router = DefaultRouter()
 router.register(r'units', UnitViewSet)
@@ -47,6 +48,8 @@ urlpatterns = [
     path('api/signals/', SignalsListView.as_view(), name='signals_list'),
     path('api/', include(router.urls)),
     path('api/register/', RegisterView.as_view(), name='register'),
+    path('api/diagnostic/', DiagnosticLessonsView.as_view(), name='diagnostic_lessons'),
+    path('api/submit-response/', SubmitResponseView.as_view(), name='submit_response'),
 ]
 
 if settings.DEBUG:

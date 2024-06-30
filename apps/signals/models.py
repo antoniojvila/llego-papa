@@ -5,8 +5,14 @@ User = get_user_model()
 
 class Unit(models.Model):
     name = models.CharField(max_length=20)
+    level = models.IntegerField(default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Unit'
+        verbose_name_plural = 'Units'
+        ordering = ['level']
 
 class Lessons(models.Model):
     name = models.CharField(max_length=100)
@@ -39,3 +45,11 @@ class ULesson(models.Model):
     completed = models.BooleanField(default=False)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
+
+class UserResponse(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    lesson = models.ForeignKey(Lessons, on_delete=models.CASCADE)
+    response = models.CharField(max_length=100)
+    correct = models.BooleanField(default=False)
+    time_taken = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
