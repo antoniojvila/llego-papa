@@ -1,0 +1,64 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&display=swap" rel="stylesheet">
+    <script src="{% static 'js/memory_game.js' %}" defer></script>
+</head>
+
+<body>
+    <div class="backdrop" id="backdrop">
+        <div class="backdrop-wrapper">
+            <div class="bottom-divisor"></div>
+
+            <div class="sign-icon">
+                <!-- Example SVG -->
+                <svg width="65" height="51" viewBox="0 0 65 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 0 L40 0 L30 20 Z" fill="white"/>
+                    <path d="M20 30 L40 30 L30 50 Z" fill="white"/>
+                </svg>
+            </div>
+
+            <h1>Memory Game - Sign Language</h1>
+            <button id="startGame" class="backdrop-cta">Start Game</button>
+            <div class="bottom-divisor"></div>
+        </div>
+    </div>
+
+    <main class="game-main">
+        <header>
+            <div class="signlingo-logo">
+                <svg id="backToAppArrow" width="24" height="24" style="margin: 0 1rem; cursor: pointer;" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
+                    <path d="M20 .755l-14.374 11.245 14.374 11.219-.619.781-15.381-12 15.391-12 .609.755z"/>
+                </svg>
+                <svg width="192" height="51" viewBox="0 0 192 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 0 L40 0 L30 20 Z" fill="black"/>
+                </svg>
+            </div>
+
+            <div class="score-properties">
+                <div class="score-data">
+                    <div class="score score-board">
+                        <h2 class="score-board__text">Score</h2>
+                        <p id="score">0</p>
+                    </div>
+                    <div class="timer score-board">
+                        <h2 class="score-board__text">Time</h2>
+                        <p id="time">60</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <section id="gameBoard" class="game-board"></section>
+    </main>
+</body>
+
+</html>
