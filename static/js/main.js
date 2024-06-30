@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const refreshToken = localStorage.getItem('refresh_token');
 
     if (accessToken || refreshToken) {
-        login('elchinomarico8', 'elchinomarico').then(() => {
+        login('admin', 'admin').then(() => {
             initializeData();
         }).catch(error => console.error('Login failed:', error));
     } else {
@@ -116,10 +116,10 @@ document.addEventListener("DOMContentLoaded", () => {
         roundNumber += 1;
         const totalScore = parseInt(scoreElement.textContent) + success;
         const newScore = {
-            game: 2,
+            game: 1,
             hits: success,
             time: 60 - timeRemaining,
-            errors: cardCount - score
+            errors: errors
         };
 
         authenticatedFetch('http://127.0.0.1:8000/api/round-history/', 'POST', newScore)

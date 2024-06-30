@@ -6,28 +6,34 @@ This project sets up a Django application with Docker, including PostgreSQL as t
 
 ### 1. Build and Start the Containers
 
-Build the Docker images and start the containers:
+Build the Docker images:
 
 ```sh
-docker-compose up --build
+docker-compose build
 ```
 
-### 2. Run Migrations
+### 2. Create superuser
 
-Apply the database migrations to create the necessary tables:
+create superuser defaulr:
 
 ```sh
-docker-compose run web python manage.py migrate
-docker-compose run web python manage.py create_superuser --noinput
+docker-compose up -d
+docker-compose exec web python manage.py createsuperuser
+username: admin
+email: admin@gmail.com
+password: admin
+verify_password: admin
 
 ```
+Nota: solo ingresar los valores para crear la cuenta del superuser segun lo vaya pidiendo la consola
 
 ### 3. Access the Application
 
-Once the containers are running, you can access the Django application in your web browser at the following URL (replace `your-domain.com` with your actual domain or IP address):
+Once the containers are running, you can access the Django application in your web browser at the following URL:
 
 ```
-http://your-domain.com:8000
+http://127.0.0.1:8000/games/1/ or
+http://127.0.0.1:8000/games/2/
 ```
 
 Feel free to adjust the URL as needed for your specific setup.

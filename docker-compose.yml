@@ -7,10 +7,11 @@ services:
       - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: always  # Asegura que el contenedor se reinicie si se cae
 
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
     volumes:
       - .:/app
     ports:
@@ -24,6 +25,7 @@ services:
       options:
         max-size: "200k"
         max-file: "10"
+    restart: always  # Asegura que el contenedor se reinicie si se cae
 
 volumes:
   postgres_data:

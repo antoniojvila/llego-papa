@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const refreshToken = localStorage.getItem('refresh_token');
 
     if (accessToken || refreshToken) {
-        login('elchinomarico8', 'elchinomarico').then(() => {
+        login('admin', 'admin').then(() => {
             fetchSignals();
         }).catch(error => console.error('Login failed:', error));
     } else {
