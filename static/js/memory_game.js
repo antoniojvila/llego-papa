@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const gameBoard = document.getElementById('gameBoard');
     const startGameButton = document.getElementById('startGame');
     const backdrop = document.getElementById('backdrop');
+    const finalScoreElement = document.getElementById('finalScore');
+    const finalTimeElement = document.getElementById('finalTime');
     const scoreElement = document.getElementById('score');
     const timeElement = document.getElementById('time');
     const backToAppArrow = document.getElementById('backToAppArrow');
@@ -32,6 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
         timeRemaining = 60;
         scoreElement.textContent = score;
         timeElement.textContent = timeRemaining;
+        finalScoreElement.style.display = 'none';
+        finalTimeElement.style.display = 'none';
         gameBoard.innerHTML = ''; // Clear game board
         if (timerInterval) {
             clearInterval(timerInterval);
@@ -141,8 +145,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function endGame() {
-        alert(`Game over! Your score is ${score}`);
-        resetGame();
+        finalScoreElement.textContent = `Your score is ${score}`;
+        finalTimeElement.textContent = `Time taken: ${60 - timeRemaining} seconds`;
+        finalScoreElement.style.display = 'block';
+        finalTimeElement.style.display = 'block';
         backdrop.style.display = "flex"; // Show the backdrop again for restarting the game
     }
 });

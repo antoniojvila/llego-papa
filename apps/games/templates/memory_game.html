@@ -2,7 +2,6 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,40 +9,36 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&display=swap" rel="stylesheet">
-    <script src="{% static 'js/memory_game.js' %}" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 </head>
-
 <body>
     <div class="backdrop" id="backdrop">
         <div class="backdrop-wrapper">
             <div class="bottom-divisor"></div>
-
             <div class="sign-icon">
-                <!-- Example SVG -->
                 <svg width="65" height="51" viewBox="0 0 65 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20 0 L40 0 L30 20 Z" fill="white"/>
-                    <path d="M20 30 L40 30 L30 50 Z" fill="white"/>
+                    <g opacity="0.998">
+                        <!-- SVG content here -->
+                    </g>
                 </svg>
             </div>
-
-            <h1>Memory Game - Sign Language</h1>
+            <h1>Memory Game</h1>
             <button id="startGame" class="backdrop-cta">Start Game</button>
+            <h2 id="finalScore" style="display:none;"></h2>
+            <h2 id="finalTime" style="display:none;"></h2>
             <div class="bottom-divisor"></div>
         </div>
     </div>
-
     <main class="game-main">
         <header>
             <div class="signlingo-logo">
-                <svg id="backToAppArrow" width="24" height="24" style="margin: 0 1rem; cursor: pointer;" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
-                    <path d="M20 .755l-14.374 11.245 14.374 11.219-.619.781-15.381-12 15.391-12 .609.755z"/>
-                </svg>
+                <svg id="backToAppArrow" width="24" height="24" style="margin: 0 1rem; cursor: pointer;" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M20 .755l-14.374 11.245 14.374 11.219-.619.781-15.381-12 15.391-12 .609.755z"/></svg>
                 <svg width="192" height="51" viewBox="0 0 192 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20 0 L40 0 L30 20 Z" fill="black"/>
+                    <g opacity="0.998">
+                        <!-- SVG content here -->
+                    </g>
                 </svg>
             </div>
-
             <div class="score-properties">
                 <div class="score-data">
                     <div class="score score-board">
@@ -56,9 +51,16 @@
                     </div>
                 </div>
             </div>
+            <div class="score-actions">
+                <button class="score-action" id="restart">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M23 12c0 1.042-.154 2.045-.425 3h-2.101c.335-.94.526-1.947.526-3 0-4.962-4.037-9-9-9-1.706 0-3.296.484-4.655 1.314l1.858 2.686h-6.994l2.152-7 1.849 2.673c1.684-1.049 3.659-1.673 5.79-1.673 6.074 0 11 4.925 11 11zm-6.354 7.692c-1.357.826-2.944 1.308-4.646 1.308-4.962 0-9-4.038-9-9 0-1.053.191-2.06.525-3h-2.1c-.271.955-.425 1.958-.425 3 0 6.075 4.925 11 11 11 2.127 0 4.099-.621 5.78-1.667l1.853 2.667 2.152-6.989h-6.994l1.855 2.681z"/></svg>
+                </button>
+            </div>
         </header>
-        <section id="gameBoard" class="game-board"></section>
+        <section id="game">
+            <div id="gameBoard" class="game-board"></div>
+        </section>
     </main>
+    <script src="{% static 'js/memory_game.js' %}"></script>
 </body>
-
 </html>
