@@ -27,7 +27,12 @@ verify_password: admin
 ```
 Nota: solo ingresar los valores para crear la cuenta del superuser segun lo vaya pidiendo la consola
 
-### 3. Access the Application
+### 3. load units and lessons
+
+```
+docker-compose exec web python load_units_lessons.py
+```
+### 4. Access the Application
 
 Once the containers are running, you can access the Django application in your web browser at the following URL:
 
