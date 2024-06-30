@@ -115,7 +115,12 @@ document.addEventListener("DOMContentLoaded", () => {
     function saveScore(success, errors) {
         roundNumber += 1;
         const totalScore = parseInt(scoreElement.textContent) + success;
-        const newScore = { "hits": success, "errors": errors };
+        const newScore = {
+            game: 2,
+            hits: success,
+            time: 60 - timeRemaining,
+            errors: cardCount - score
+        };
 
         authenticatedFetch('http://127.0.0.1:8000/api/round-history/', 'POST', newScore)
             .then(data => fetchScore())

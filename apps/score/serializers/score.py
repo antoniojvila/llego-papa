@@ -9,4 +9,5 @@ class ScoreSerializer(serializers.ModelSerializer):
 class RoundHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = RoundHistory
-        fields = ['hits', 'errors']
+        fields = ['hits', 'errors', 'game', 'time', 'created_at']
+        read_only_fields = ['created_at']

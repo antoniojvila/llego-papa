@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const finalTimeElement = document.getElementById('finalTime');
     const scoreElement = document.getElementById('score');
     const timeElement = document.getElementById('time');
+    const restartGameButton = document.getElementById('restartGame');
+    const resultBackdrop = document.getElementById('resultBackdrop');
     const backToAppArrow = document.getElementById('backToAppArrow');
 
     let cards = [];
@@ -18,6 +20,74 @@ document.addEventListener("DOMContentLoaded", () => {
 
     startGameButton.addEventListener('click', startGame);
     backToAppArrow.addEventListener('click', () => alert('Going back to the app'));
+
+    const accessToken = localStorage.getItem('access_token');
+    const refreshToken = localStorage.getItem('refresh_token');
+
+    if (accessToken || refreshToken) {
+        login('elchinomarico8', 'elchinomarico').then(() => {
+            fetchSignals();
+        }).catch(error => console.error('Login failed:', error));
+    } else {
+        fetchSignals();
+    }
+
+    async function login(username, password) {
+        const response = await fetch('http://localhost:8000/api/token/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Login failed');
+        }
+
+        const data = await response.json();
+        localStorage.setItem('access_token', data.access);
+        localStorage.setItem('refresh_token', data.refresh);
+        console.log('Login successful');
+    }
+
+    async function authenticatedFetch(url, method = 'GET', body = null) {
+        let accessToken = localStorage.getItem('access_token');
+
+        const options = {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + accessToken,
+            },
+            body: body ? JSON.stringify(body) : null,
+        };
+
+        let response = await fetch(url, options);
+
+        if (response.status === 401) {
+            const refreshResponse = await fetch('http://localhost:8000/api/token/refresh/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ refresh: localStorage.getItem('refresh_token') }),
+            });
+
+            if (!refreshResponse.ok) {
+                throw new Error('Failed to refresh token');
+            }
+
+            const refreshData = await refreshResponse.json();
+            localStorage.setItem('access_token', refreshData.access);
+            accessToken = refreshData.access;
+
+            options.headers['Authorization'] = 'Bearer ' + accessToken;
+            response = await fetch(url, options);
+        }
+
+        return response.json();
+    }
 
     async function startGame() {
         backdrop.style.display = "none";
@@ -44,8 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function fetchSignals() {
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/signals/');
-            const data = await response.json();
+            const data = await authenticatedFetch('http://127.0.0.1:8000/api/signals/');
             const signals = data.signals;
             const responses = data.responses;
 
@@ -144,11 +213,25 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 1000);
     }
 
-    function endGame() {
+    async function endGame() {
         finalScoreElement.textContent = `Your score is ${score}`;
         finalTimeElement.textContent = `Time taken: ${60 - timeRemaining} seconds`;
         finalScoreElement.style.display = 'block';
         finalTimeElement.style.display = 'block';
         backdrop.style.display = "flex"; // Show the backdrop again for restarting the game
+
+        const roundData = {
+            game: 2,
+            hits: score,
+            time: 60 - timeRemaining,
+            errors: cardCount - score
+        };
+
+        try {
+            await authenticatedFetch('http://127.0.0.1:8000/api/round-history/', 'POST', roundData);
+            console.log('Score saved successfully');
+        } catch (error) {
+            console.error('Error saving score:', error);
+        }
     }
 });
