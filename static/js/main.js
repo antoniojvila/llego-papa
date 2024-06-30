@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const refreshToken = localStorage.getItem('refresh_token');
 
     if (!accessToken || !refreshToken) {
-        login('admin', 'admin').then(() => {
+        login('admin2', 'admin2').then(() => {
             initializeData();
         }).catch(error => console.error('Login failed:', error));
     } else {

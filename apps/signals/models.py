@@ -1,12 +1,40 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 
-# Create your models here.
+User = get_user_model()
 
-class Signals(models.Model):
+class Unit(models.Model):
+    name = models.CharField(max_length=20)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    updatedAt = models.DateTimeField(auto_now=True)
+
+class Lessons(models.Model):
     name = models.CharField(max_length=100)
-    value = models.CharField(max_length=50)
-    meaning = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='images/', blank=True, null=True)
+    video = models.FileField(upload_to='videos/', blank=True, null=True)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    updatedAt = models.DateTimeField(auto_now=True)   
 
     class Meta:
-        verbose_name = 'Signals'
-        verbose_name_plural = 'Signalss'
+        verbose_name = 'Lessons'
+        verbose_name_plural = 'Lessons'
+
+
+class UUnit(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_unit')
+    name = models.CharField(max_length=20)
+    average = models.IntegerField(default=0)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    updatedAt = models.DateTimeField(auto_now=True)
+
+
+class ULesson(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_lesson')
+    name = models.CharField(max_length=20)
+    image = models.ImageField(upload_to='images/', blank=True, null=True)
+    video = models.FileField(upload_to='videos/', blank=True, null=True)
+    unit = models.ForeignKey(UUnit, on_delete=models.CASCADE)
+    completed = models.BooleanField(default=False)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    updatedAt = models.DateTimeField(auto_now=True)

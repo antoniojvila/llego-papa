@@ -21,7 +21,7 @@ class RoundHistoryCreateView(APIView):
         if serializer.is_valid():
             round_history = serializer.save(user=request.user)
             score, created = Score.objects.get_or_create(user=request.user)
-            score.score = score.score + round_history.hits  # Actualiza el puntaje basado en los hits
+            score.score = score.score + round_history.hits
             score.save()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
