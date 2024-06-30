@@ -5,9 +5,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const successElement = document.getElementById('success');
     const errorsElement = document.getElementById('errors');
     const timeElement = document.getElementById('time');
-    const startButton = document.getElementById('start');
     const restartButton = document.getElementById('restart');
-
+    const FirstStartButton = document.getElementById('firstStart');
+    const backdrop = document.getElementById('backdrop');
+    const retryStart = document.getElementById('retryStart');
+    const resultBackdrop = document.getElementById('resultBackdrop');
+    const finalScore = document.getElementById('finalScore');
+    const backToApp = document.getElementById('backToApp');
+    const backToAppArrow = document.getElementById('backToAppArrow');
+    
     let selectedLeft = null;
     let data = {};
     let timerInterval;
@@ -17,8 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const accessToken = localStorage.getItem('access_token');
     const refreshToken = localStorage.getItem('refresh_token');
 
-    if (!accessToken || !refreshToken) {
-        login('admin2', 'admin2').then(() => {
+    if (accessToken || refreshToken) {
+        login('elchinomarico8', 'elchinomarico').then(() => {
             initializeData();
         }).catch(error => console.error('Login failed:', error));
     } else {
@@ -59,7 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
         let response = await fetch(url, options);
 
         if (response.status === 401) {
-            // Token has expired, refresh it
             const refreshResponse = await fetch('http://localhost:8000/api/token/refresh/', {
                 method: 'POST',
                 headers: {
@@ -76,7 +81,6 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem('access_token', refreshData.access);
             accessToken = refreshData.access;
 
-            // Retry the original request with the new access token
             options.headers['Authorization'] = 'Bearer ' + accessToken;
             response = await fetch(url, options);
         }
@@ -119,6 +123,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function startGame() {
+        backdrop.style.display = "none";
+        resultBackdrop.style.display = "none";
+
         resetScore();
         resetTimer();
         fillContainers();
@@ -162,36 +169,43 @@ document.addEventListener("DOMContentLoaded", () => {
     function endGame() {
         const success = parseInt(successElement.textContent);
         const errors = parseInt(errorsElement.textContent);
-        alert(`Game over! Your score is ${success}`);
+        resultBackdrop.style.display = "block";
+        finalScore.innerHTML = success;
         saveScore(success, errors);
         resetGame();
     }
 
-    function shuffle(array) {
-        for (let i = array.length - 1; i > 0; i--) {
+    function shuffle(my_array) {
+        for (let i = my_array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
+            [my_array[i], my_array[j]] = [my_array[j], my_array[i]];
         }
-        return array;
+        return my_array;
     }
+    
 
     function fillContainers() {
         const shuffledSignals = shuffle([...data.signals]);
         const shuffledResponses = shuffle([...data.responses]);
-
+    
         const signalsSubset = shuffledSignals.slice(0, 10);
         const responsesSubset = shuffledResponses.slice(0, 10);
-
-        const commonElement = signalsSubset[Math.floor(Math.random() * signalsSubset.length)];
-        const responseIndex = Math.floor(Math.random() * 10);
-        responsesSubset[responseIndex] = commonElement;
-
+    
+        const commonElementIndex = Math.floor(Math.random() * signalsSubset.length);
+        const commonElement = signalsSubset[commonElementIndex];
+    
+        const responseIndex = responsesSubset.findIndex(response => response.id === commonElement.id);
+    
+        if (responseIndex !== -1) {
+            responsesSubset[responseIndex] = { id: commonElement.id, name: responsesSubset[responseIndex].name };
+        }
+    
+    
         const signalElements = leftColumn.querySelectorAll('.signal');
         const responseElements = rightColumn.querySelectorAll('.response');
-
         for (let i = 0; i < 10; i++) {
-            signalElements[i].textContent = signalsSubset[i];
-            responseElements[i].textContent = responsesSubset[i];
+            signalElements[i].innerHTML = `<img src="${signalsSubset[i].image}" item="${signalsSubset[i].id}" class="sign-icon"></img>`;
+            responseElements[i].innerHTML = `<div class="sign-icon" item="${responsesSubset[i].id}">${responsesSubset[i].name}</div>`;
         }
     }
 
@@ -259,6 +273,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    startButton.addEventListener('click', startGame);
+    const backtoAppFunction = () => {
+        alert("Aquí te lleva pa la aplicación");
+    }
+
     restartButton.addEventListener('click', startGame);
+    FirstStartButton.addEventListener('click', startGame);
+    retryStart.addEventListener('click', startGame);
+
+    backToApp.addEventListener('click', backtoAppFunction);
+
+    backToAppArrow.addEventListener('click', backtoAppFunction);
 });

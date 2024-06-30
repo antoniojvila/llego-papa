@@ -1,29 +1,143 @@
 body {
     margin: 0;
     padding: 0;
+    font-family: Roboto;
+    background-color: #dfe6e9;
+
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: lightgray;
 }
 
 main {
     width: 100vw;
     height: 100vh;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+}
+
+.backdrop, .result-backdrop {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    font-size: 1.25rem;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.result-backdrop {
+    display: none;
+}
+
+#finalScore {
+    margin-top: 0;
+}
+
+.backdrop-cta {
+    padding: 1rem 3rem;
+    border: 1px #ffffff solid;
+    font-size: 0.9rem;
+    border-radius: 0.25rem;
+    background: none;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.backdrop-cta:hover {
+    background-color: #ffffff !important;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.back-app {
+    font-size: 0.9rem;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.back-app:hover {
+    color: #b2bec3;
+}
+
+.backdrop-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.bottom-divisor {
+    width: 100%;
+    height: 0.25rem;
+    margin-top: 5rem;
+    margin-bottom: 5rem;
+    background-color: #ffffff;
 }
 
 header {
-    display: flex;
-    justify-content: space-around;
-    background-color: gray;
     width: 100%;
     padding: 10px 0;
+    background-color: #ffffff;
+    color: #636e72;
+
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: 1fr;
+    justify-content: stretch;
+}
+
+.score-board {
+    margin-right: 5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.score-action {
+    margin-right: 1rem;
+    border: 0;
+    background: none;
+    cursor: pointer;
+}
+
+.score-action svg {
+    fill: #636e72;
+    transition: 0.25s fill;
+}
+
+.score-action:hover svg {
+    fill: #b2bec3;
+}
+
+.signlingo-logo {
+    padding: 0.5rem;
+}
+
+.score-board p {
+    margin: 0.5rem;
+}
+
+.score-board__text {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.score-properties {
+    justify-self: center;
+    align-self: center;
 }
 
 header div {
     display: flex;
     align-items: center;
-    color: white;
 }
 
 header h2 {
@@ -31,11 +145,12 @@ header h2 {
 }
 
 #game {
-    display: grid;
-    grid-template-columns: 1fr 90% 1fr;
-    background-color: gray;
     width: 100%;
     height: 100%;
+
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: 1fr;
 }
 
 .left-column, .right-column {
@@ -44,21 +159,21 @@ header h2 {
 }
 
 .middle-column {
-    background-color: lightblue;
+    background-color: #ecf0f1;
     width: 100%; /* Para que crezca todo lo posible */
 }
 
 .signal, .response {
-    border-style: solid;
-    border-width: 3px;
-    border-color: black;
-    color: black;
+    width: 5rem;
+    height: 5rem;
+    color: #636e72;
+    font-size: 50px;
+    font-family: Roboto;
+    font-style: bold;
+    
+    display: flex;
     justify-content: center;
     align-items: center;
-    display: flex;
-    font-size: 50px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-style: bold;
 }
 
 .signal:hover, .response:hover {
@@ -66,10 +181,10 @@ header h2 {
     background-color: lightgray;
 }
 
-.response {
-    color: orange;
+.selected {
+    background-color: #c8d6e5;
 }
 
-.selected {
-    background-color: yellow;
+.sign-icon{
+    height: 80px;
 }

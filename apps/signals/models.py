@@ -20,7 +20,8 @@ class Lessons(models.Model):
         verbose_name = 'Lessons'
         verbose_name_plural = 'Lessons'
 
-
+    def __str__(self) -> str:
+        return self.name
 class UUnit(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_unit')
     name = models.CharField(max_length=20)

@@ -1,11 +1,12 @@
 import os
 import django
 from django.conf import settings
+from django.core.files import File
+from django.core.files.storage import FileSystemStorage
 
 # Configura Django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 django.setup()
-
 
 from apps.signals.models import Unit, Lessons
 
@@ -24,10 +25,22 @@ def create_units_and_lessons():
                 if os.path.isfile(file_path):
                     name, extension = os.path.splitext(file_name)
                     if extension.lower() in ['.jpg', '.jpeg', '.png', '.gif']:
+                        # Mover la imagen a la carpeta correcta
+                        new_image_path = os.path.join('images', folder_name, file_name)
+                        new_image_full_path = os.path.join(settings.MEDIA_ROOT, new_image_path)
+
+                        # Crear directorio si no existe
+                        os.makedirs(os.path.dirname(new_image_full_path), exist_ok=True)
+
+                        # Mover el archivo
+                        fs = FileSystemStorage()
+                        with open(file_path, 'rb') as image_file:
+                            fs.save(new_image_path, File(image_file))
+
                         # Crear una lección
                         lesson = Lessons(
                             name=name,
-                            image=os.path.join(folder_name, file_name),
+                            image=new_image_path,  # Guardar la ruta relativa en la base de datos
                             unit=unit
                         )
                         lesson.save()

@@ -18,7 +18,13 @@ from .models import Unit, Lessons, UUnit, ULesson
 class SignalsListView(APIView):
     def get(self, request, format=None):
         signals = Lessons.objects.all()
-        signals_values = list(signals.values('id', 'image'))
+        signals_values = [
+            {
+                'id': signal.id,
+                'image': request.build_absolute_uri(signal.image.url) if signal.image else None
+            }
+            for signal in signals
+        ]
         responses_meanings = list(signals.values('id', 'name'))
 
         custom_response = {
