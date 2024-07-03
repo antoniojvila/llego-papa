@@ -16,7 +16,17 @@ from .models import Unit, Lessons, UUnit, ULesson
 
 class SignalsListView(APIView):
     def get(self, request, format=None):
-        signals = Lessons.objects.all()
+        unit_id = request.query_params.get('unit_id')
+        
+        if not unit_id:
+            return Response({'error': 'unit_id parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            unit_id = int(unit_id)
+        except ValueError:
+            return Response({'error': 'unit_id must be an integer'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        signals = ULesson.objects.filter(unit__id=unit_id)
         signals_values = [
             {
                 'id': signal.id,
@@ -32,7 +42,6 @@ class SignalsListView(APIView):
         }
 
         return Response(custom_response, status=status.HTTP_200_OK)
-
 
 class UnitViewSet(viewsets.ModelViewSet):
     queryset = Unit.objects.all()
