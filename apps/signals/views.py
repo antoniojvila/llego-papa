@@ -78,7 +78,7 @@ class UUnitViewSet(viewsets.ModelViewSet):
                     'name': lesson.name,
                     'unit': uunit,
                     'image': lesson.image if lesson.image else None,
-                    'ico': lesson.image if lesson.ico else None,
+                    'ico': lesson.ico if lesson.ico else None,
                     'video': lesson.video if lesson.video else None
                 }
                 ULesson.objects.create(**ulesson_data)
