@@ -13,6 +13,9 @@ class Unit(models.Model):
         verbose_name = 'Unit'
         verbose_name_plural = 'Units'
         ordering = ['level']
+    
+    def __str__(self) -> str:
+        return '{} - {}'.format(self.level, self.name)
 
 class Lessons(models.Model):
     name = models.CharField(max_length=100)
