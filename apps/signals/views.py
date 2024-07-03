@@ -20,7 +20,7 @@ class SignalsListView(APIView):
         signals_values = [
             {
                 'id': signal.id,
-                'image': request.build_absolute_uri(signal.image.url) if signal.image else None
+                'image': request.build_absolute_uri(signal.ico.url) if signal.ico else None
             }
             for signal in signals
         ]
@@ -102,6 +102,8 @@ class ULessonViewSet(viewsets.ModelViewSet):
         }
         if(lesson.image):
             ulesson_data['image'] = lesson.image
+        if(lesson.ico):
+            ulesson_data['ico'] = lesson.image
         if(lesson.video):
             ulesson_data['video'] = lesson.video
         

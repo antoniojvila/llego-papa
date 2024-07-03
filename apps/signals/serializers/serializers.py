@@ -16,12 +16,12 @@ class UUnitSerializer(serializers.ModelSerializer):
 class ULessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = ULesson
-        fields = ['id', 'user', 'name', 'image', 'video', 'unit', 'completed', 'createdAt', 'updatedAt']
+        fields = ['id', 'user', 'name', 'image', 'ico', 'video', 'unit', 'completed', 'createdAt', 'updatedAt']
 
 class LessonsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lessons
-        fields = ['id', 'name', 'image', 'video', 'unit']
+        fields = ['id', 'name', 'image', 'ico', 'video', 'unit']
 
 class UnitSerializer(serializers.ModelSerializer):
     show_for_my_level = serializers.SerializerMethodField()

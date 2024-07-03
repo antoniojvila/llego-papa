@@ -17,6 +17,7 @@ class Unit(models.Model):
 class Lessons(models.Model):
     name = models.CharField(max_length=100)
     image = models.ImageField(upload_to='images/', blank=True, null=True)
+    ico = models.ImageField(upload_to='images/', blank=True, null=True)
     video = models.FileField(upload_to='videos/', blank=True, null=True)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     createdAt = models.DateTimeField(auto_now_add=True)
@@ -40,6 +41,7 @@ class ULesson(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_lesson')
     name = models.CharField(max_length=20)
     image = models.ImageField(upload_to='images/', blank=True, null=True)
+    ico = models.ImageField(upload_to='images/', blank=True, null=True)
     video = models.FileField(upload_to='videos/', blank=True, null=True)
     unit = models.ForeignKey(UUnit, on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
