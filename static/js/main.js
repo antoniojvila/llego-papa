@@ -13,23 +13,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const finalScore = document.getElementById('finalScore');
     const backToApp = document.getElementById('backToApp');
     const backToAppArrow = document.getElementById('backToAppArrow');
-    
+
     let selectedLeft = null;
     let data = {};
     let timerInterval;
     let timeRemaining = 60;
     let roundNumber = 0;
 
-    const accessToken = localStorage.getItem('access_token');
-    const refreshToken = localStorage.getItem('refresh_token');
+    const username = getCookie('username') || 'admin';
+    const password = getCookie('password') || 'admin';
 
-    if (accessToken || refreshToken) {
+    login(username, password).then(() => {
+        initializeData();
+    }).catch(error => {
+        console.error('Login with cookie credentials failed, trying with admin credentials:', error);
         login('admin', 'admin').then(() => {
             initializeData();
-        }).catch(error => console.error('Login failed:', error));
-    } else {
-        initializeData();
-    }
+        }).catch(error => console.error('Login with admin credentials failed:', error));
+    });
 
     async function login(username, password) {
         const response = await fetch('http://localhost:8000/api/token/', {
@@ -187,25 +188,23 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         return my_array;
     }
-    
 
     function fillContainers() {
         const shuffledSignals = shuffle([...data.signals]);
         const shuffledResponses = shuffle([...data.responses]);
-    
+
         const signalsSubset = shuffledSignals.slice(0, 10);
         const responsesSubset = shuffledResponses.slice(0, 10);
-    
+
         const commonElementIndex = Math.floor(Math.random() * signalsSubset.length);
         const commonElement = signalsSubset[commonElementIndex];
-    
+
         const responseIndex = responsesSubset.findIndex(response => response.id === commonElement.id);
-    
+
         if (responseIndex !== -1) {
             responsesSubset[responseIndex] = { id: commonElement.id, name: responsesSubset[responseIndex].name };
         }
-    
-    
+
         const signalElements = leftColumn.querySelectorAll('.signal');
         const responseElements = rightColumn.querySelectorAll('.response');
         for (let i = 0; i < 10; i++) {
@@ -289,4 +288,10 @@ document.addEventListener("DOMContentLoaded", () => {
     backToApp.addEventListener('click', backtoAppFunction);
 
     backToAppArrow.addEventListener('click', backtoAppFunction);
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
 });

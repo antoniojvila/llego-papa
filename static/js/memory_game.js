@@ -21,16 +21,17 @@ document.addEventListener("DOMContentLoaded", () => {
     startGameButton.addEventListener('click', startGame);
     backToAppArrow.addEventListener('click', () => alert('Going back to the app'));
 
-    const accessToken = localStorage.getItem('access_token');
-    const refreshToken = localStorage.getItem('refresh_token');
+    const username = getCookie('username') || 'admin';
+    const password = getCookie('password') || 'admin';
 
-    if (accessToken || refreshToken) {
+    login(username, password).then(() => {
+        fetchSignals();
+    }).catch(error => {
+        console.error('Login with cookie credentials failed, trying with admin credentials:', error);
         login('admin', 'admin').then(() => {
             fetchSignals();
-        }).catch(error => console.error('Login failed:', error));
-    } else {
-        fetchSignals();
-    }
+        }).catch(error => console.error('Login with admin credentials failed:', error));
+    });
 
     async function login(username, password) {
         const response = await fetch('http://localhost:8000/api/token/', {
@@ -233,5 +234,11 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) {
             console.error('Error saving score:', error);
         }
+    }
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
     }
 });
