@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Unit, Lessons, UserResponse
+from .models import Unit, Lessons, UserResponse, UUnit, ULesson
 from .serializers.serializers import LessonsSerializer
 import random
 import numpy as np
@@ -38,6 +38,7 @@ class SubmitResponseView(APIView):
             time_taken = response_data.get('time_taken')
 
             lesson = Lessons.objects.get(id=lesson_id)
+            
             correct = (response == lesson.name)
 
             UserResponse.objects.create(
@@ -49,14 +50,34 @@ class SubmitResponseView(APIView):
             )
 
         level = evaluate_user_level(user)
+        level = level if level <= 3 else 3
         user.level = level
         user.save()
+        units = Unit.objects.filter(level__gte=level)
+        for unit in units:
+            uunit_data = {
+                'user': request.user,
+                'name': unit.name,
+                'average': 0
+            }
+            uunit = UUnit.objects.create(**uunit_data)
+            lessons = Lessons.objects.filter(unit=unit)
+            for lesson in lessons:
+                ulesson_data = {
+                    'user': request.user,
+                    'name': lesson.name,
+                    'unit': uunit,
+                    'image': lesson.image.url if lesson.image else None,
+                    'video': lesson.video.url if lesson.video else None
+                }
+                ULesson.objects.create(**ulesson_data)
         return Response({'level': level}, status=status.HTTP_200_OK)
 
 def evaluate_user_level(user):
     responses = UserResponse.objects.filter(user=user)
     unit_performance = {}
 
+    # Calcula el rendimiento por unidad
     for response in responses:
         unit_id = response.lesson.unit.id
         if unit_id not in unit_performance:
@@ -67,9 +88,14 @@ def evaluate_user_level(user):
         if response.correct:
             unit_performance[unit_id]['correct'] += 1
 
+    # Verifica si hay datos de rendimiento
+    if not unit_performance:
+        return 0  # O algún valor por defecto que indique el nivel del usuario
+
     lowest_performance_unit = None
     lowest_performance_score = float('inf')
 
+    # Encuentra la unidad con el peor rendimiento
     for unit_id, performance in unit_performance.items():
         correct = performance['correct']
         total = performance['total']
@@ -85,5 +111,13 @@ def evaluate_user_level(user):
             lowest_performance_score = performance_score
             lowest_performance_unit = unit_id
 
-    unit = Unit.objects.get(id=lowest_performance_unit)
+    # Verifica si lowest_performance_unit ha sido actualizado
+    if lowest_performance_unit is None:
+        return 0  # O algún valor por defecto que indique el nivel del usuario
+
+    try:
+        unit = Unit.objects.get(id=lowest_performance_unit)
+    except Unit.DoesNotExist:
+        return 0  # O algún valor por defecto que indique el nivel del usuario
+
     return unit.level
