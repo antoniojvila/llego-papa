@@ -57,6 +57,7 @@ def process_lessons(folder_path, unit):
                 print(f'Lección creada: {name} en unidad: {unit.name}')
 
 def assign_ico(folder_path, unit):
+    fs = FileSystemStorage()
     for file_name in os.listdir(folder_path):
         file_path = os.path.join(folder_path, file_name)
         if os.path.isfile(file_path):
@@ -64,14 +65,13 @@ def assign_ico(folder_path, unit):
             if extension.lower() in ['.jpg', '.jpeg', '.png', '.gif']:
                 try:
                     lesson = Lessons.objects.get(name=name, unit=unit)
-                    new_ico_path = os.path.join('images', unit.name, file_name)
+                    new_ico_path = os.path.join('images', unit.name, 'ico', file_name)
                     new_ico_full_path = os.path.join(settings.MEDIA_ROOT, new_ico_path)
 
                     # Crear directorio si no existe
                     os.makedirs(os.path.dirname(new_ico_full_path), exist_ok=True)
 
                     # Mover el archivo
-                    fs = FileSystemStorage()
                     with open(file_path, 'rb') as ico_file:
                         fs.save(new_ico_path, File(ico_file))
 
