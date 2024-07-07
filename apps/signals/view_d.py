@@ -50,7 +50,6 @@ class SubmitResponseView(APIView):
             )
 
         level = evaluate_user_level(user)
-        level = level if level <= 3 else 3
         user.level = level
         user.save()
         units = Unit.objects.filter(level__gte=level)
