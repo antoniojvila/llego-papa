@@ -3,6 +3,8 @@ from ..models import Unit, Lessons, UUnit, ULesson, UserResponse
 
 class UUnitSerializer(serializers.ModelSerializer):
     average = serializers.SerializerMethodField(read_only=True)
+    lessons = serializers.SerializerMethodField()
+
     class Meta:
         model = UUnit
         fields = ['id', 'name', 'user', 'average', 'createdAt', 'updatedAt']
@@ -11,7 +13,16 @@ class UUnitSerializer(serializers.ModelSerializer):
         current_lessons = ULesson.objects.filter(unit=obj).count()
         current_lessons_completed = ULesson.objects.filter(unit=obj, completed=True).count()
         average = (current_lessons_completed / current_lessons) * 100
-        return int(average) 
+        return int(average)
+    
+    def get_lessons(self, obj):
+        lessons = ULesson.objects.filter(unit=obj)
+        return ULessonReduxSerializer(lessons, many=True).data
+
+class ULessonReduxSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ULesson
+        fields = ['id', 'name', 'image', 'ico', 'video', 'completed']
 
 class ULessonSerializer(serializers.ModelSerializer):
     class Meta:

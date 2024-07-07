@@ -13,7 +13,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Unit, Lessons, UUnit, ULesson
 
 
-
 class SignalsListView(APIView):
     def get(self, request, format=None):
         unit_id = request.query_params.get('unit_id')
