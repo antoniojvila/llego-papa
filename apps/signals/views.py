@@ -65,25 +65,6 @@ class UUnitViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)
 
-    
-    def list(self, request, *args, **kwargs):
-        queryset = Unit.objects.all()
-        for unit in queryset:
-            uunit, _ = UUnit.objects.get_or_create(user=request.user, name=unit.name)
-            lessons = Lessons.objects.filter(unit=unit)
-            for lesson in lessons:
-                ulesson_data = {
-                    'user': request.user,
-                    'name': lesson.name,
-                    'unit': uunit,
-                    'image': lesson.image if lesson.image else None,
-                    'ico': lesson.ico if lesson.ico else None,
-                    'video': lesson.video if lesson.video else None
-                }
-                ULesson.objects.create(**ulesson_data)
-
-        serializer = self.get_serializer(self.get_queryset(), many=True)
-        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         unit_id = request.data.get('unit_id')

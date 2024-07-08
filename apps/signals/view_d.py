@@ -5,6 +5,8 @@ from .models import Unit, Lessons, UserResponse, UUnit, ULesson
 from .serializers.serializers import LessonsSerializer
 import random
 import numpy as np
+from django.db.models import Max
+from numpy import mean
 
 class DiagnosticLessonsView(APIView):
     def get(self, request):
@@ -78,49 +80,54 @@ def evaluate_user_level(user):
     # Calcula el rendimiento por unidad
     for response in responses:
         unit_id = response.lesson.unit.id
+        unit_level = response.lesson.unit.level
+
         if unit_id not in unit_performance:
-            unit_performance[unit_id] = {"correct": 0, "total": 0, "time": []}
+            unit_performance[unit_id] = {
+                "level": unit_level,
+                "correct": 0,
+                "total": 0
+            }
 
         unit_performance[unit_id]["total"] += 1
-        unit_performance[unit_id]["time"].append(response.time_taken)
         if response.correct:
             unit_performance[unit_id]["correct"] += 1
 
     # Verifica si hay datos de rendimiento
     if not unit_performance:
-        return 0  # O algún valor por defecto que indique el nivel del usuario
+        return 0  # Nivel por defecto si no hay respuestas
 
-    lowest_performance_unit = None
-    lowest_performance_score = float("inf")
+    # Calcular la precisión y el nivel ponderado
+    total_correct = 0
+    total_questions = 0
+    weighted_levels = []
 
-    # Encuentra la unidad con el peor rendimiento
-    for unit_id, performance in unit_performance.items():
-        correct = performance["correct"]
+    for performance in unit_performance.values():
         total = performance["total"]
-        avg_time = np.mean(performance["time"])
-        stddev_time = np.std(performance["time"])
-
+        correct = performance["correct"]
         accuracy = correct / total
-        avg_time_penalty = np.mean(
-            [time - avg_time for time in performance["time"] if time > avg_time]
-        )
+        unit_level = performance["level"]
 
-        performance_score = (1 - accuracy) + avg_time_penalty
+        # Pondera el nivel por la precisión
+        weighted_level = accuracy * unit_level
+        weighted_levels.append(weighted_level)
 
-        if performance_score < lowest_performance_score:
-            lowest_performance_score = performance_score
-            lowest_performance_unit = unit_id
+        total_correct += correct
+        total_questions += total
 
-    # Verifica si lowest_performance_unit ha sido actualizado
-    if lowest_performance_unit is None:
-        return 0  # O algún valor por defecto que indique el nivel del usuario
+    # Calcula el nivel promedio ponderado
+    if weighted_levels:
+        average_level = mean(weighted_levels)
+    else:
+        average_level = 0
 
-    try:
-        unit = Unit.objects.get(id=lowest_performance_unit)
-    except Unit.DoesNotExist:
-        return 0  # O algún valor por defecto que indique el nivel del usuario
+    # Calcula el nivel general basado en el total de respuestas correctas e incorrectas
+    overall_accuracy = total_correct / total_questions
+    max_level = Unit.objects.aggregate(max_level=Max('level'))['max_level']
 
-    return unit.level
+    final_level = round(overall_accuracy * max_level)
+
+    return final_level
 
 class DiagnosticResponsesView(APIView):
     def get(self, request):
