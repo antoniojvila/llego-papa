@@ -28,6 +28,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data = super().validate(attrs)
         data['level'] = self.user.level
         data['diagnostic_completed'] = self.user.diagnostic_completed
+        data['role'] = self.user.role
         return data
 
 class CustomTokenObtainPairView(TokenObtainPairView):
