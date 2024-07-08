@@ -4,6 +4,7 @@ from .serializers import RegisterSerializer
 from .models import User
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from apps.signals.permissions import IsProfessor
 from .serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -15,7 +16,7 @@ class RegisterView(generics.CreateAPIView):
 
 
 class UserReportListView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfessor]
 
     def get(self, request):
         users = User.objects.filter(role='alumno')
@@ -26,7 +27,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         data['level'] = self.user.level
-        data['diagnostic_completed'] = self.user.level
+        data['diagnostic_completed'] = self.user.diagnostic_completed
         return data
 
 class CustomTokenObtainPairView(TokenObtainPairView):

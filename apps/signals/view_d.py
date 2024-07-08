@@ -12,7 +12,7 @@ class DiagnosticLessonsView(APIView):
         lessons_data = []
 
         for unit in units:
-            lessons = Lessons.objects.filter(unit=unit).order_by("?")[:2]
+            lessons = Lessons.objects.filter(unit=unit).order_by("id")[:2]
 
             for lesson in lessons:
                 incorrect_answers = Lessons.objects.exclude(id=lesson.id).order_by("?")[
@@ -51,6 +51,7 @@ class SubmitResponseView(APIView):
 
         level = evaluate_user_level(user)
         user.level = level
+        user.diagnostic_completed = True
         user.save()
         units = Unit.objects.filter(level__gte=level)
         for unit in units:
@@ -62,9 +63,9 @@ class SubmitResponseView(APIView):
                     "user": request.user,
                     "name": lesson.name,
                     "unit": uunit,
-                    "image": lesson.image.url if lesson.image else None,
-                    "ico": lesson.image.url if lesson.ico else None,
-                    "video": lesson.video.url if lesson.video else None,
+                    "image": lesson.image if lesson.image else None,
+                    "ico": lesson.image if lesson.ico else None,
+                    "video": lesson.video if lesson.video else None,
                 }
                 ULesson.objects.create(**ulesson_data)
         return Response({"level": level}, status=status.HTTP_200_OK)
@@ -120,3 +121,24 @@ def evaluate_user_level(user):
         return 0  # O algún valor por defecto que indique el nivel del usuario
 
     return unit.level
+
+class DiagnosticResponsesView(APIView):
+    def get(self, request):
+        units = Unit.objects.all()
+        responses_data = []
+
+        for unit in units:
+            lessons = Lessons.objects.filter(unit=unit).order_by("id")[:2]
+
+            for lesson in lessons:
+                correct_response = lesson.name
+
+                response_data = {
+                    "lesson_id": lesson.id,
+                    "response": correct_response,
+                    "time_taken": random.uniform(10, 30)  # Simulando un tiempo de respuesta
+                }
+                
+                responses_data.append(response_data)
+
+        return Response(responses_data, status=status.HTTP_200_OK)

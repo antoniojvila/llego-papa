@@ -22,7 +22,7 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     birthday = models.DateField(null=True, blank=True)
     email = models.EmailField(unique=True)
-    role = models.CharField(max_length=20)
+    role = models.CharField(max_length=20, default='profesor')
     level = models.IntegerField(default=0)
     diagnostic_completed = models.BooleanField(default=False)
     createdAt = models.DateTimeField(auto_now_add=True)
