@@ -7,7 +7,7 @@ class UUnitSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UUnit
-        fields = ['id', 'name', 'user', 'average', 'createdAt', 'updatedAt']
+        fields = ['id', 'name', 'user', 'average', 'lessons', 'createdAt', 'updatedAt']
     
     def get_average(self, obj):
         current_lessons = ULesson.objects.filter(unit=obj).count()

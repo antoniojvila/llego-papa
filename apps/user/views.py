@@ -26,6 +26,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         data['level'] = self.user.level
+        data['diagnostic_completed'] = self.user.level
         return data
 
 class CustomTokenObtainPairView(TokenObtainPairView):
