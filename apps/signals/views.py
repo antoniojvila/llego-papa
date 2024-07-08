@@ -112,7 +112,7 @@ class ULessonViewSet(viewsets.ModelViewSet):
         if(lesson.image):
             ulesson_data['image'] = lesson.image
         if(lesson.ico):
-            ulesson_data['ico'] = lesson.image
+            ulesson_data['ico'] = lesson.ico
         if(lesson.video):
             ulesson_data['video'] = lesson.video
         
